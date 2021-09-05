@@ -12,6 +12,7 @@ API_KEY=str(API_KEY)
 @app.route('/GetNfts/<string:projectID>', methods=['GET'])
 def get_nfts(projectID):
     api_url = "https://api.nft-maker.io/GetNfts/" + API_KEY + "/"+projectID+"/all"
+    print(api_url)
     response = requests.get(api_url)
     return jsonify(response.json())
 
