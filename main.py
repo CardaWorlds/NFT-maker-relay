@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask import abort
 import requests
-
+from flask_cors import CORS
 import config
 
 app = Flask(__name__)
