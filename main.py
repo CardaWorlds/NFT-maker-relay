@@ -5,7 +5,7 @@ from flask_cors import CORS
 import config
 
 app = Flask(__name__)
-CORS(app, origins= ["http://localhost:3000", "https://cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
+CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","https://cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
 import os 
 API_KEY = os.environ.get('API_KEY')
 API_KEY=str(API_KEY)
