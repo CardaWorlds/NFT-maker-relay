@@ -1,8 +1,10 @@
-from flask import Flask, jsonify
-from flask import abort
+from flask import Flask, json, jsonify
+from flask import abort, request
 import requests
 from flask_cors import CORS
 import config
+
+import base64
 
 app = Flask(__name__)
 CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
@@ -49,10 +51,7 @@ def get_address_for_specific_nft_sale(projectID, nft_id):
 @app.route('/GetAddressForRandomNftSale/<string:projectID>', methods=['GET'])
 def get_address_for_random_nft_sale(projectID):
     #price=config.prices_and_rarity[str(projectID)]["price"]
-    price=str(25000000)
-    #Temporarily using this api key. Remove this line later
-    #API_KEY= '72a5762cd58749db961901e4ddf41861' 
-    ################################
+    price=str(35000000)
     api_url = "https://api.nft-maker.io/GetAddressForRandomNftSale/" + API_KEY + "/" + projectID + "/1/"+price
     print(api_url)
     response = requests.get(api_url)
@@ -60,13 +59,95 @@ def get_address_for_random_nft_sale(projectID):
 
 @app.route('/CheckAddress/<string:projectID>/<string:paymentAddress>', methods=['GET'])
 def CheckAddress(projectID, paymentAddress):
-    #Temporarily using this api key. Remove this line later
-    #API_KEY= '72a5762cd58749db961901e4ddf41861' 
-    ################################
     api_url = "https://api.nft-maker.io/CheckAddress/" + API_KEY + "/" + projectID + "/" + paymentAddress
     print(api_url)
     response = requests.get(api_url)
     return jsonify(response.json())
+
+@app.route('/GetCounts/<string:projectID>/', methods=['GET'])
+def GetCounts(projectID):
+    api_url = "https://api.nft-maker.io/GetCounts/" + API_KEY + "/" + projectID
+    print(api_url)
+    response = requests.get(api_url)
+    return jsonify(response.json())
+""" 
+@app.route('/UploadNft', methods=['POST'])
+def UploadNft():
+    
+    comma=", "
+    print(request)
+    if request.is_json:
+        data = request.get_json()
+        print(data)
+        projectID = data['projectID']
+        api_url = "https://api.nft-maker.io/UploadNft/" + "71a28c2e9b1d4f9b9f96b0f914aa0ecf" + "/" + projectID
+        print(api_url)
+        assetName = data["assetName"]
+        planetName = data["planetName"]
+        imageURL = data["imageURL"]
+        heightmap=data["heightmap"]
+        background=data["background"]
+        rarities=comma.join(data["rarities"])
+        
+        with open(imageURL, 'rb') as binary_file:
+            binary_file_data = binary_file.read()
+            base64_encoded_data = base64.b64encode(binary_file_data)
+            imageURL_base64 = base64_encoded_data.decode('utf-8')
+        with open(heightmap, 'rb') as binary_file:
+            binary_file_data = binary_file.read()
+            base64_encoded_data = base64.b64encode(binary_file_data)
+            heightmap_base64 = base64_encoded_data.decode('utf-8')
+        with open(background, 'rb') as binary_file:
+            binary_file_data = binary_file.read()
+            base64_encoded_data = base64.b64encode(binary_file_data)
+            background_base64 = base64_encoded_data.decode('utf-8')
+        
+
+        metadata={
+            "assetName": assetName,
+            "previewImageNft": {
+                "mimetype": "image/png",
+                "fileFromBase64": imageURL_base64,
+                "description": "test description",
+                "metadataPlaceholder": [
+                {
+                    "name": "rarities",
+                    "value": rarities
+                },
+                {
+                    "name": "planetName",
+                    "value": planetName
+                }
+                ]
+                
+            },
+            "subfiles": [
+                {
+                "mimetype": "image/png",
+                "name":"space",
+                "fileFromBase64": background_base64,
+                "description": "Cosmic background for "+assetName,
+                "totalAmount":"test"
+                },
+                {
+                "name":"heightmap",
+                "mimetype": "image/png",
+                "fileFromBase64": heightmap_base64,
+                "description": "Heightmap for "+assetName
+                }
+            ],
+        }
+
+        #print(metadata)
+        response = requests.post(api_url, json=metadata)
+        #print(response)
+        return jsonify(response.json())
+        #return jsonify(data)
+    else:
+        return jsonify(status="Request was not JSON")
+     """
+
+    
 
 @app.route('/GetProjectPriceAndRarity/<string:projectID>', methods=['GET']) #get the amount of mintable nfts for each project, and the price of the nfts
 def get_project_price_and_rarity(projectID):
