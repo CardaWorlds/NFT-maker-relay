@@ -7,12 +7,12 @@ import config
 import base64
 
 app = Flask(__name__)
-#CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
+#CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","http://127.0.0.1:5500","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
 CORS(app, origins= ["https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
 
 import os 
 API_KEY = os.environ.get('API_KEY')
-API_KEY=str(API_KEY)
+API_KEY=str(API_KEY)        
 
 @app.route('/GetNfts/<string:projectID>', methods=['GET'])
 def get_nfts(projectID):
@@ -50,13 +50,22 @@ def get_address_for_specific_nft_sale(projectID, nft_id):
     response = requests.get(api_url)
     return jsonify(response.json())
 
-@app.route('/GetAddressForRandomNftSale/<string:projectID>', methods=['GET'])
-def get_address_for_random_nft_sale(projectID):
+@app.route('/GetAddressForRandomNftSale/<string:projectID>/<int:amountToBuy>', methods=['GET'])
+def get_address_for_random_nft_sale(projectID, amountToBuy):
     #price=config.prices_and_rarity[str(projectID)]["price"]
-    price=str(35000000)
-    api_url = "https://api.nft-maker.io/GetAddressForRandomNftSale/" + API_KEY + "/" + projectID + "/1/"+price
+    if(amountToBuy==1):
+        price=str(12000000)
+    elif(amountToBuy==3):
+        price=str(36000000)
+    elif(amountToBuy==5):
+        price=str(60000000)
+    else:
+        return("Amount not allowed")
+    api_url = "https://api.nft-maker.io/GetAddressForRandomNftSale/" + API_KEY + "/" + projectID + "/"+str(amountToBuy)+"/"+price
     print(api_url)
     response = requests.get(api_url)
+    print(response)
+
     return jsonify(response.json())
 
 @app.route('/CheckAddress/<string:projectID>/<string:paymentAddress>', methods=['GET'])
@@ -72,82 +81,87 @@ def GetCounts(projectID):
     print(api_url)
     response = requests.get(api_url)
     return jsonify(response.json())
-""" 
-@app.route('/UploadNft', methods=['POST'])
-def UploadNft():
+
+# @app.route('/UploadNft', methods=['POST'])
+# def UploadNft():
     
-    comma=", "
-    print(request)
-    if request.is_json:
-        data = request.get_json()
-        print(data)
-        projectID = data['projectID']
-        api_url = "https://api.nft-maker.io/UploadNft/" + "71a28c2e9b1d4f9b9f96b0f914aa0ecf" + "/" + projectID
-        print(api_url)
-        assetName = data["assetName"]
-        planetName = data["planetName"]
-        imageURL = data["imageURL"]
-        heightmap=data["heightmap"]
-        background=data["background"]
-        rarities=comma.join(data["rarities"])
+#     comma=", "
+#     print(request)
+#     if request.is_json:
+#         data = request.get_json()
+#         print(data)
+#         projectID = data['projectID']
+#         api_url = "https://api.nft-maker.io/UploadNft/" + API_KEY + "/" + projectID
+#         print(api_url)
+#         assetName = data["assetName"]
+#         planetName = data["planetName"]
+#         imageURL = data["imageURL"]
+#         heightmap=data["heightmap"]
+#         background=data["background"]
+#         galaxyType=data["galaxyType"]
+#         #rarities=comma.join(data["rarities"])
+#         rarities=data["rarities"]
         
-        with open(imageURL, 'rb') as binary_file:
-            binary_file_data = binary_file.read()
-            base64_encoded_data = base64.b64encode(binary_file_data)
-            imageURL_base64 = base64_encoded_data.decode('utf-8')
-        with open(heightmap, 'rb') as binary_file:
-            binary_file_data = binary_file.read()
-            base64_encoded_data = base64.b64encode(binary_file_data)
-            heightmap_base64 = base64_encoded_data.decode('utf-8')
-        with open(background, 'rb') as binary_file:
-            binary_file_data = binary_file.read()
-            base64_encoded_data = base64.b64encode(binary_file_data)
-            background_base64 = base64_encoded_data.decode('utf-8')
+#         with open(imageURL, 'rb') as binary_file:
+#             binary_file_data = binary_file.read()
+#             base64_encoded_data = base64.b64encode(binary_file_data)
+#             imageURL_base64 = base64_encoded_data.decode('utf-8')
+#         with open(heightmap, 'rb') as binary_file:
+#             binary_file_data = binary_file.read()
+#             base64_encoded_data = base64.b64encode(binary_file_data)
+#             heightmap_base64 = base64_encoded_data.decode('utf-8')
+#         with open(background, 'rb') as binary_file:
+#             binary_file_data = binary_file.read()
+#             base64_encoded_data = base64.b64encode(binary_file_data)
+#             background_base64 = base64_encoded_data.decode('utf-8')
         
 
-        metadata={
-            "assetName": assetName,
-            "previewImageNft": {
-                "mimetype": "image/png",
-                "fileFromBase64": imageURL_base64,
-                "description": "test description",
-                "metadataPlaceholder": [
-                {
-                    "name": "rarities",
-                    "value": rarities
-                },
-                {
-                    "name": "planetName",
-                    "value": planetName
-                }
-                ]
+#         metadata={
+#             "assetName": assetName,
+#             "previewImageNft": {
+#                 "mimetype": "image/png",
+#                 "fileFromBase64": imageURL_base64,
+#                 "description": planetName,
+#                 "metadataPlaceholder": [
+#                 {
+#                     "name": "rarities",
+#                     "value": rarities
+#                 },
+#                 {
+#                     "name": "planetName",
+#                     "value": planetName
+#                 },
+#                 {
+#                     "name": "galaxyType",
+#                     "value": galaxyType
+#                 }
+#                 ]
                 
-            },
-            "subfiles": [
-                {
-                "mimetype": "image/png",
-                "name":"space",
-                "fileFromBase64": background_base64,
-                "description": "Cosmic background for "+assetName,
-                "totalAmount":"test"
-                },
-                {
-                "name":"heightmap",
-                "mimetype": "image/png",
-                "fileFromBase64": heightmap_base64,
-                "description": "Heightmap for "+assetName
-                }
-            ],
-        }
+#             },
+#             "subfiles": [
+#                 {
+#                 "name":"heightmap",
+#                 "mimetype": "image/png",
+#                 "fileFromBase64": heightmap_base64,
+#                 "description": "Heightmap for "+assetName
+#                 },
+#                 {
+#                 "mimetype": "image/png",
+#                 "name":"space",
+#                 "fileFromBase64": background_base64,
+#                 "description": "Cosmic background for "+assetName,
+#                 }
+#             ],
+#         }
 
-        #print(metadata)
-        response = requests.post(api_url, json=metadata)
-        #print(response)
-        return jsonify(response.json())
-        #return jsonify(data)
-    else:
-        return jsonify(status="Request was not JSON")
-     """
+#         #print(metadata)
+#         response = requests.post(api_url, json=metadata)
+#         #print(response)
+#         return jsonify(response.json())
+#         #return jsonify(data)
+#     else:
+#         return jsonify(status="Request was not JSON")
+    
 
     
 
