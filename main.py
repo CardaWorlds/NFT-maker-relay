@@ -7,8 +7,8 @@ import config
 import base64
 
 app = Flask(__name__)
-#CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","http://127.0.0.1:5500","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
-CORS(app, origins= ["https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
+CORS(app, origins= ["http://localhost:3000", "http://localhost:5500","http://127.0.0.1:5500","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
+#CORS(app, origins= ["https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
 
 import os 
 API_KEY = os.environ.get('API_KEY')
@@ -150,6 +150,12 @@ def GetCounts(projectID):
 #                 "name":"space",
 #                 "fileFromBase64": background_base64,
 #                 "description": "Cosmic background for "+assetName,
+#                 },
+#                 {
+#                 "mimetype": "image/png",
+#                 "name":"map",
+#                 "fileFromBase64": imageURL_base64,
+#                 "description": "Map for "+assetName,
 #                 }
 #             ],
 #         }
