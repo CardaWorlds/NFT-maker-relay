@@ -180,7 +180,7 @@ def get_project_price_and_rarity(projectID):
 
 @app.route('/CheckCardanoAddress/<string:address>', methods=['GET'])
 def CheckCardanoAddress(address):
-    api_url = "https://cardano-mainnet.blockfrost.io/api/v0/addresses/"+str(address)+"/total"
+    api_url = "https://cardano-mainnet.blockfrost.io/api/v0/addresses/"+str(address)
     print(api_url)
     headers={'project_id':'cAiR6OBMC8HcwEc8kf9BVPR05eqW1Cx0'}
     response = requests.get(api_url, headers=headers)
