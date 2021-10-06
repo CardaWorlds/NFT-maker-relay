@@ -10,8 +10,8 @@ app = Flask(__name__)
 #Enable CORS for local testing
 CORS(app, origins= ["http://localhost:3000","http://localhost:5000", "http://localhost:5500","http://127.0.0.1:5500","http://127.0.0.1:3000","https://cardaworlds.io","https://viewer.cardaworlds.io","https://www.cardaworlds.io","https://cardaworlds.github.io"])
 
-#Enable CORS for production website
-#CORS(app, origins= ["https://cardaworlds.io","https://www.cardaworlds.io"])
+#Enable CORS for production website. Replace this with your website URL from where the requests will be made
+#CORS(app, origins= ["https://yourwebsite.io","https://www.yourwebsite.io"])
 
 import os 
 API_KEY = os.environ.get('API_KEY')
